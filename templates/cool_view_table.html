@@ -1,0 +1,195 @@
+{% load staticfiles %}
+{% load i18n static %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<head>
+<title>{% block title %}{% endblock %}</title>
+
+
+<script type="text/javascript" src="{% static 'jquery-1.12.3.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'datatables.min.js' %}"> </script>
+<link rel="stylesheet" media="all" href="{% static "jquery.dataTables.min.css" %}" type="text/css">
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+{% block extrastyle %}{% endblock %}
+{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{% static "admin/css/rtl.css" %}{% endblock %}" />{% endif %}
+{% block extrahead %}{% endblock %}
+{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+</head>
+{% load i18n %}
+
+<br class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}"
+  data-admin-utc-offset="{% now "Z" %}">
+
+<!-- Container -->
+
+
+    {% if not is_popup %}
+    <!-- Header -->
+    <div id="header">
+        <div id="branding">
+        {% block branding %}{% endblock %}
+        </div>
+        {% block usertools %}
+        {% if has_permission %}
+        <div id="user-tools">
+            {% block welcome-msg %}
+                {% trans 'Welcome,' %}
+                <strong>{% firstof user.get_short_name user.get_username %}</strong>.
+            {% endblock %}
+            {% block userlinks %}
+                {% if site_url %}
+                    <a href="{{ site_url }}">{% trans 'View site' %}</a> /
+                {% endif %}
+                {% if user.is_active and user.is_staff %}
+                    {% url 'django-admindocs-docroot' as docsroot %}
+                    {% if docsroot %}
+                        <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
+                    {% endif %}
+                {% endif %}
+                {% if user.has_usable_password %}
+                <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+                {% endif %}
+                <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+            {% endblock %}
+        </div>
+        {% endif %}
+        {% endblock %}
+        {% block nav-global %}{% endblock %}
+    </div>
+    <!-- END Header -->
+    {% block breadcrumbs %}
+    <div class="breadcrumbs">
+
+    {% if title %} &rsaquo; {{ title }}{% endif %}
+    </div>
+    {% endblock %}
+    {% endif %}
+
+    {% block messages %}
+        {% if messages %}
+        <ul class="messagelist">{% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message|capfirst }}</li>
+        {% endfor %}</ul>
+        {% endif %}
+    {% endblock messages %}
+
+    <!-- Content -->
+    <div id="content" class="{% block coltype %}colM{% endblock %}">
+        {% block pretitle %}{% endblock %}
+        {% block content_title %}{% if title %}<h1>{{ title }}</h1>{% endif %}{% endblock %}
+        {% block content %}
+        {% block object-tools %}{% endblock %}
+        {{ content }}
+        {% endblock %}
+
+
+    </div>
+
+<a href=/cool_view/test_model/0> Add test  model</a> </br>
+
+<a>Добро пожаловать, {{ User }} / </a>
+<!-- <a href=/cool_view/password_change/> / ИЗМЕНИТЬ ПАРОЛЬ /</a> -->
+
+
+<a href=/cool_view/logoff/> Выйти</a> </br>
+<a href=/cool_view/edit/0/> Добавить чеклист<a>
+<table>
+<tr>
+<td width="100%">
+<table id="example" class="cell-border compact stripe">
+        <thead>
+             <tr>
+            <td> <a>Номер операционной</a> </td>
+            <td> <a>Номер по порядку</a> </td>
+            <td> <a>Дата операции</a> </td>
+            <td> <a>ФИО пациента</a> </td>
+            <td> <a>Хирург</a> </td>
+            <td> <a>Отделение</a> </td>
+            <td> <a>Операция</a> </td>
+                 <td visible="false"> <a>Авария</a> </td>
+            <td> <a>Печать</a> </td>
+                 <td> <a>Удалить</a> </td>
+             </tr>
+        </thead>
+        <tbody>
+            {% for item  in CheckList%}
+
+        <tr {% if item.aids%} bgcolor="#ffcc00"{% endif %}>
+
+        <td> <a href=/cool_view/test_model/{{item.id }}>{{ item.num_room }}</a> </td>
+            <td> <a href=/cool_view/edit/{{item.id }}>{{ item.number }}</a> </td>
+            <td> <a href=/cool_view/edit/{{item.id }}>{{ item.date }}</a> </td>
+            <td> <a href=/cool_view/edit/{{item.id }}> {{ item.patient }}</a> </td>
+        <td> <a href=/cool_view/edit/{{item.id }}>{{ item.doctor }}</a> </td>
+        <td> <a href=/cool_view/edit/{{item.id }}>{{ item.dept }}</a> </td>
+            <td> <a href=/cool_view/edit/{{item.id }}>{{ item.oper}}</a> </td>
+
+            <td> <a>{% if item.incident or item.inc_doctor or item.inc_anesthes or item.inc_nurse or item.inc_nurse_a or item.inc_nurse2 or item.inc_cut or item.inc_blood_skin or item.inc_blood_lips or item.inc_blood_robe or item.inc_drugs or item.inc_action or item.inc_message or item.inc_act or item.inc_log or item.rw or item.aids or item.vgv or item.vgs or item.anaerobic_b or item.tbs%}+{% else %}-{% endif %}</a> </td>
+        <td> <a><span><a href=/print/{{item.id }}> <img src="/static/print.png" width="20" height="20" title="Печать"></img></a></span></a> </td>
+            <td> <a></a> </td>
+
+        </tr>
+    {% endfor %}
+       </tbody>
+    </table>
+</td>
+    </tr>
+</table>
+
+
+
+<script>
+$("#example").dataTable(
+
+    {
+    "fnRowCallback": function( nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+        switch(aData[7]){
+            case "<a>+</a>":
+                $(nRow).css('color', 'red')
+                break;
+        }},
+
+    "pageLength": 25,
+    language: {
+      "processing": "Подождите...",
+      "search": "Поиск:",
+      "lengthMenu": "Показать _MENU_ записей",
+      "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+      "infoEmpty": "Записи с 0 до 0 из 0 записей",
+      "infoFiltered": "(отфильтровано из _MAX_ записей)",
+      "infoPostFix": "",
+      "loadingRecords": "Загрузка записей...",
+      "zeroRecords": "Записи отсутствуют.",
+      "emptyTable": "В таблице отсутствуют данные",
+      "paginate": {
+        "first": "Первая",
+        "previous": "Предыдущая",
+        "next": "Следующая",
+        "last": "Последняя"
+      },
+      "aria": {
+        "sortAscending": ": активировать для сортировки столбца по возрастанию",
+        "sortDescending": ": активировать для сортировки столбца по убыванию"
+      }
+  }}
+
+
+
+
+);
+
+</script>
+
+
+
+    <!-- END Content -->
+
+    {% block footer %}<div id="footer"></div>{% endblock %}
+</div>
+<!-- END Container -->
+
+
+
+</body>
+</html>

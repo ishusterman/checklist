@@ -1,0 +1,196 @@
+{% load staticfiles %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+<title>Чеклисты ГБУЗ Республиканская клиническая больница им.Г.Г.Куватова</title>
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+
+
+<script type="text/javascript" src="/jsi18n/"></script>
+<link href="/static/select2/css/select2.css" type="text/css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="/static/admin/js/core.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
+<script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
+<script type="text/javascript" src="/static/admin/js/actions.js"></script>
+<script type="text/javascript" src="/static/admin/js/urlify.js"></script>
+<script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
+<script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
+<script type="text/javascript" src="/static/admin/js/calendar.js"></script>
+<script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.jquery_ready.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.jquery_ui_sortable.js"></script>
+<script type="text/javascript" src="/static/select2/js/select2.js"></script>
+<script type="text/javascript" src="/static/admin/js/collapse.js"></script>
+<script type="text/javascript" src="/static/admin/js/inlines.js"></script>
+
+     <link rel="stylesheet" href="/static/style_aware.css">
+
+    <script type="text/javascript">
+  function showOrHide(cb, cat) {
+    cb = document.getElementById(cb);
+    cat = document.getElementById(cat);
+    if (cb.checked) cat.style.display = "block";
+    else cat.style.display = "none";
+  }
+    </script>
+
+
+
+</head>
+
+<body>
+ <div id="header">
+        <div id="branding">
+        {% block branding %}<h1 ><a>Чеклисты ГБУЗ Республиканская клиническая больница им.Г.Г.Куватова</a></h1>{% endblock %}
+        </div>
+    </div>
+    <!-- END Header -->
+    {% block breadcrumbs %}
+    <div class="breadcrumbs">
+    </div>
+    {% endblock %}
+
+    <form method="post" action="/cool_view/save_model/">
+
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+        <input name="id" type="text" size="15" value="{{ id }}"/>
+
+
+        {{ form.num_room }}
+        {{ form.number }} </br>
+        {{ form.date }}
+        {{ form.time }} </br>
+        {{ form.oper_start }}
+        {{ form.oper_finish }} </br>
+        {{ form.doctor_come_time}}
+        {{ form.anesthes_come_time }} </br>
+        Очередь{{ form.queue}}
+        Продолжительность{{ form.duration }} </br>
+        {{ form.plan}}
+        {{ form.vmp_rf }}
+        {{ form.vmp_rb }} </br>
+
+        <fieldset class="module aligned collapse">
+            <h2>Операционная бригада</h2>
+
+            <a>Доктор</a>{{ form.doctor }}
+            <a>Второй хирург</a>{{ form.doctor2 }}
+            <a>Ассистент</a>{{ form.assistent }} <br>
+            <a>Анестезиолог</a>{{ form.anesthes }}
+            <a>Медсестра</a>{{ form.nurse }}
+            <a>медсестра-анестезист</a>{{ form.nurse_a }}
+            <a>Санитарка</a>{{ form.nurse2 }} </br>
+            </fieldset>
+
+        <fieldset class="module aligned collapse">
+            <h2>Пациент</h2>
+        <a>ФИО</a>{{ form.patient }}
+        <a>Номер ИБ</a>{{ form.num_ib }}
+        <a>Отделение</a>{{ form.dept }}
+        <a>Пол</a>{{ form.gender }}
+        <a>Возраст</a>{{ form.age }}
+        <a>Аллергия</a>{{ form.allergy }}
+
+            <a>Операция</a>{{ form.oper }} </br>
+        </fieldset>
+
+        <fieldset class="module aligned collapse">
+            <h2>Расходный материал</h2>
+            {{ form.blade11 }}
+            {{ form.blade15 }}
+            {{ form.blade23 }}
+
+        </fieldset>
+
+    {{ eq_formset.management_form }}
+    {% for form in eq_formset %}
+        {{ form }} </br>
+    {% endfor %}
+
+    {{ im_formset.management_form }}
+    {% for form in im_formset %}
+        {{ form }} </br>
+    {% endfor %}
+
+    {{ resorpt_formset.management_form }}
+    {% for form in resorpt_formset %}
+        {{ form }} </br>
+    {% endfor %}
+
+    {{ no_resorpt_formset.management_form }}
+    {% for form in no_resorpt_formset %}
+        {{ form }} </br>
+    {% endfor %}
+
+     <input type="checkbox" id="inc_cut" onchange = 'showOrHide("inc_cut", "aware1");' name="inc_cut"
+        {% if form.inc_cut.value%} checked {% endif %}
+       >
+        <a>порез, укол</a> </br>
+    <a id="aware1" class="aware"
+           {% if form.inc_cut.value%}  style = 'display: block;' {% else %} style = 'display: none;' {% endif %}
+    >
+    >> немедленно снять перчатки </br>
+    >> вымыть руки с мылом под проточной водой </br>
+    >> обработать руки 70%-м спиртом </br>
+    >> смазать ранку 5%-м спиртовым раствором йода;
+    </a> </br>
+
+    <input type="checkbox" id="inc_blood_skin" onchange = 'showOrHide("inc_blood_skin", "aware2");' name="inc_blood_skin"
+        {% if form.inc_blood_skin.value%} checked {% endif %}
+       >
+        <a>попадание крови или др. биологических метериалов на кожные покровы</a> </br>
+    <a id="aware2" class="aware"
+           {% if form.inc_blood_skin.value%}  style = 'display: block;' {% else %} style = 'display: none;' {% endif %}
+    >
+    >> это место обрабатывают 70%-м спиртом </br>
+    >> обмывают водой с мылом </br>
+    >> и повторно обрабатывают 70%-м спиртом </br>
+    </a> </br>
+
+    <input type="checkbox" id="inc_blood_lips" onchange = 'showOrHide("inc_blood_lips", "aware3");' name="inc_blood_lips"
+        {% if form.inc_blood_lips.value%} checked {% endif %}
+       >
+        <a>попадание крови или др. биологических метериалов на слизистую глаз, носа, рта</a> </br>
+    <a id="aware3" class="aware"
+           {% if form.inc_blood_lips.value%}  style = 'display: block;' {% else %} style = 'display: none;' {% endif %}
+    >
+   >> ротовую полость промыть большим количеством воды и прополоскать 70% р-ром этилового спирта  </br>
+    >> слизистую оболочку носа и глаза обильно промывают водой (не тереть!!!) </br>
+    </a> </br>
+
+    <input type="checkbox" id="inc_blood_robe" onchange = 'showOrHide("inc_blood_robe", "aware4");' name="inc_blood_robe"
+        {% if form.inc_blood_robe.value%} checked {% endif %}
+       >
+        <a>попадание крови или др. биологических метериалов на одежду</a> </br>
+    <a id="aware4" class="aware"
+           {% if form.inc_blood_robe.value%}  style = 'display: block;' {% else %} style = 'display: none;' {% endif %}
+    >
+    >> снять рабочую одежду и погрузить в дезинфицирующий раствор
+    </a> </br>
+
+
+
+
+
+
+        <input type="submit" value="К списку чеклистов" name="action"/>
+        <input type="submit" value="Сохранить" name="action"/>
+
+    </form>
+
+    </body>
+
+</html>
+
+

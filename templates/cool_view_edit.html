@@ -1,0 +1,104 @@
+{% load staticfiles %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+<title>Чеклисты ГБУЗ Республиканская клиническая больница им.Г.Г.Куватова</title>
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/base.css" %}"/>
+
+   <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/static/jquery.ui.datepicker-ru.js"></script>
+
+
+
+  <script>
+  $( function() {
+        $( "#datepicker" ).datepicker();
+        //$( "#datepicker" ).datepicker( "option", "dateFormat", "d MM yy г." );
+        } );
+  $(document).ready(function(){
+    $( "#datepicker" ).datepicker( $.datepicker.regional[ "ru" ] );
+  });
+    </script>
+
+</head>
+<body>
+
+
+ <div id="header">
+        <div id="branding">
+        {% block branding %}<h1 ><a>Чеклисты ГБУЗ Республиканская клиническая больница им.Г.Г.Куватова</a></h1>{% endblock %}
+        </div>
+    </div>
+    <!-- END Header -->
+    {% block breadcrumbs %}
+    <div class="breadcrumbs">
+    </div>
+    {% endblock %}
+
+    <form action="/cool_view/save/" method="post">
+
+    {% csrf_token %}
+        <a>Add</a> <input name="Add" type="text" size="5" value="{{ CheckList.Add}}">
+        <a>ID</a> <input name="id" type="text" size="5" value="{{ CheckList.id}}">
+        <a>Номер операционной</a> <input name="num_room" type="text" size="5" value="{{ CheckList.num_room }}">
+        <a>Номер</a> <input name="number" type="text" size="5" value="{{ CheckList.number }}"> </br>
+        <a>Хирург</a> <input name="doctor" type="text" size="15" value="{{ CheckList.doctor}}">
+        <a>Пациент</a> <input name="patient" type="text" size="15" value="{{ CheckList.patient}}">
+        <a>Username</a> <input name="username" type="text" size="15" value="{{ Username}}">
+        <a>Add</a> <input name="add" type="text" size="15" value="{{ CheckList.Add}}">
+        <select>
+            {% for item in Oper.all %}
+            <option value="{{item.id}}" {% if Oper_id == item.id %}selected{% endif %}>{{ item.oper }}</option>
+             {% endfor %}
+        </select> </br>
+
+        <a>Импланты</a></br>
+        <table>
+            <tr>
+                <th>Название</th>
+                <th>Удалить?</th>
+            </tr>
+
+            {% for item in Implant_display.all %}
+                <tr>
+                <td><a>{{ item.implant_id }}</a> <td>
+                <td><input type="checkbox" value={{ item.implant_id_id}} name="del_implant[]"/></td>
+                </tr>
+            {% endfor %}
+
+
+        <tr>
+        <td>
+        <select name="add_implant">
+             <option value="0">-------</option>
+            {% for item in Implant.all %}
+            <option value="{{item.id}}"> {{item.implant}} </option>
+             {% endfor %}
+        </select>
+        </td>
+        <td>
+        <!-- <input type="checkbox" value="add" name="cb_add_implant"/> -->
+            <a>Добавить имплант</a>
+        </td>
+        <tr>
+        </table>
+
+        <p>Дата операции<input type="text" name="date" id="datepicker" value="{{ CheckList.date }}"></p>
+
+        <input type="submit" value="К списку чеклистов" name="action"/>
+        <input type="submit" value="Сохранить" name="action"/>
+
+
+
+</form>
+
+</body>
+
+</html>
+
